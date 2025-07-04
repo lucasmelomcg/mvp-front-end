@@ -144,6 +144,8 @@
   </div>
 
   <script>
+    const BASE_URL = 'http://127.0.0.1:5001';
+
     function cadastrarUsuario() {
       const dados = {
         nome: document.getElementById('nome').value,
@@ -154,12 +156,15 @@
         genero: document.getElementById('genero').value
       };
 
-      fetch('http://127.0.0.1:5000/cadastrar_usuario', {
+      fetch(`${BASE_URL}/cadastrar_usuario`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao cadastrar");
+        return res.json();
+      })
       .then(data => {
         alert(data.mensagem);
         listarUsuarios();
@@ -168,7 +173,7 @@
     }
 
     function listarUsuarios() {
-      fetch('http://127.0.0.1:5000/buscar_usuarios')
+      fetch(`${BASE_URL}/buscar_usuarios`)
         .then(res => res.json())
         .then(usuarios => {
           const corpo = document.getElementById('corpo-tabela');
@@ -190,7 +195,7 @@
 
     function excluirUsuario(id) {
       if (confirm("Tem certeza que deseja excluir este usuário?")) {
-        fetch(`http://127.0.0.1:5000/deletar_usuario/${id}`, {
+        fetch(`${BASE_URL}/deletar_usuario/${id}`, {
           method: 'DELETE'
         })
         .then(res => res.json())
